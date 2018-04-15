@@ -17,6 +17,7 @@ class TreeNode extends React.Component {
         treeId: PropTypes.string.isRequired,
         value: PropTypes.string.isRequired,
         onCheck: PropTypes.func.isRequired,
+        onClick: PropTypes.func.isRequired,
         onExpand: PropTypes.func.isRequired,
 
         children: PropTypes.node,
@@ -38,6 +39,7 @@ class TreeNode extends React.Component {
         super(props);
 
         this.onCheck = this.onCheck.bind(this);
+        this.onClick = this.onClick.bind(this);
         this.onExpand = this.onExpand.bind(this);
     }
 
@@ -66,6 +68,10 @@ class TreeNode extends React.Component {
             value: this.props.value,
             expanded: !this.props.expanded,
         });
+    }
+
+    onClick() {
+        this.props.onClick(this.props.value);
     }
 
     hasChildren() {
@@ -152,20 +158,26 @@ class TreeNode extends React.Component {
 
         const inputId = `${treeId}-${value.split(' ').join('_')}`;
 
+        const onKeyPress = (e) => { console.log('OnKeyPress', e); };
+
         return (
-            <label htmlFor={inputId}>
-                <NativeCheckbox
-                    checked={checked === 1}
-                    disabled={disabled}
-                    id={inputId}
-                    indeterminate={checked === 2}
-                    onChange={this.onCheck}
-                />
-                <span className="rct-checkbox">
-                    {this.renderCheckboxIcon()}
+            <div>
+                <label htmlFor={inputId}>
+                    <NativeCheckbox
+                        checked={checked === 1}
+                        disabled={disabled}
+                        id={inputId}
+                        indeterminate={checked === 2}
+                        onChange={this.onCheck}
+                    />
+                    <span className="rct-checkbox">
+                        {this.renderCheckboxIcon()}
+                    </span>
+                </label>
+                <span onClick={this.onClick} onKeyPress={onKeyPress} className="selectButton" role="link" tabIndex={0}>
+                    {children}
                 </span>
-                {children}
-            </label>
+            </div>
         );
     }
 
